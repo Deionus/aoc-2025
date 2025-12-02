@@ -35,59 +35,16 @@ Need to be careful not to double count nums (any repition of 4 is also a rep of 
 from functools import cache
 from utils import c
 
-
-def part1():
-    print("Doubles, Quads")
+RANGES = sorted([(int(a), int(b)) for a, b in [r.split("-") for r in c()]], key=lambda x: x[0])
+def solve(generator, skip):
     total = 0
-    i = iter(get_ranges())
     n = 1
+    i = iter(RANGES)
     r = next(i)
     while r:
-        d = digits(n)
-        num = (n*(10**d))+n
-        if num >= r[0] and num <= r[1]: total += num; print(f"Invalid Id! {num}")
-        elif num > r[1]: r = next(i, None); continue
-        n += 1
-    return total
-
-def part2():
-    total = part1()
-    print("Triples")
-    i = iter(get_ranges())
-    r = next(i)
-    n = 1
-    while r:
-        if n % 11 == 0: n += 1; continue
-        d = digits(n)
-        num = (n*(100**d)) + (n*(10**d)) + n
-        if num >= r[0] and num <= r[1]: total += num; print(f"Invalid Id! {num}")
-        elif num > r[1]: r = next(i, None); continue
-        n += 1
-    return septs(quints(total))
-
-def quints(total):
-    print("Quints")
-    i = iter(get_ranges())
-    r = next(i)
-    n = 1
-    while r:
-        if n % 11 == 0: n+=1; continue
-        d = digits(n)
-        num = (n*(10000**d)) + (n*(1000**d)) + (n*(100**d)) + (n*(10**d)) + n
-        if num >= r[0] and num <= r[1]: total += num; print(f"Invalid Id! {num}")
-        elif num > r[1]: r = next(i, None); continue
-        n += 1
-    return total
-
-def septs(total):
-    print("Septs")
-    i = iter(get_ranges())
-    r = next(i)
-    n = 1
-    while r:
-        d = digits(n)
-        num = (n*(1000000**d)) + (n*(100000**d)) + (n*(10000**d)) + (n*(1000**d)) + (n*(100**d)) + (n*(10**d)) + n
-        if num >= r[0] and num <= r[1]: total += num; print(f"Invalid Id! {num}")
+        if skip(n): n+=1; continue
+        num = generator(n)
+        if num >= r[0] and num <= r[1]: total += num
         elif num > r[1]: r = next(i, None); continue
         n += 1
     return total
@@ -100,8 +57,17 @@ def digits(num):
         num = num // 10
     return i
 
+totals = [
+    solve(gen, skip) for gen, skip in 
+    [
+        (lambda n: (n*(10**digits(n)))+n, lambda _: False),
+        (lambda n: (n*(100**digits(n))) + (n*(10**digits(n))) + n, lambda n: n % 11 == 0),
+        (lambda n: (n*(10000**digits(n))) + (n*(1000**digits(n))) + (n*(100**digits(n))) + (n*(10**digits(n))) + n, lambda n: n % 11 == 0),
+        (lambda n: (n*(1000000**digits(n))) + (n*(100000**digits(n))) + (n*(10000**digits(n))) + (n*(1000**digits(n))) + (n*(100**digits(n))) + (n*(10**digits(n))) + n, lambda _: False),
+    ]
+]
 
-def get_ranges():
-    return sorted([(int(a), int(b)) for a, b in [r.split("-") for r in c()]], key=lambda x: x[0])
-
-print(part2())
+part1 = totals[0]
+part2 = sum(totals)
+print(part1)
+print(part2)
