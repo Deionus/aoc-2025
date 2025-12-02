@@ -8,3 +8,7 @@ def o():
 
 def l():
     return o().split("\n")
+
+
+def c():
+    return o().split(",")
