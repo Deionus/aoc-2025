@@ -13,27 +13,24 @@ Find all the IDs in the ranges and add them up
 6 digit: 100100, 101101, etc.
 """
 
+from functools import cache
 from utils import c
 
 
 def part1():
-    ranges = [r.split("-") for r in c()]
     total = 0
-    for min, max in ranges:
-        for i in range(int(min), int(max) + 1):
-            d = digits(i)
-            if d % 2 == 1:
-                continue
-
-            right = i // (10 ** (d / 2))
-            left = i % (10 ** (d / 2))
-
-            if right == left:
-                total += i
-
+    i = iter([r for r in sorted([(int(a), int(b)) for a, b in [r.split("-") for r in c()]], key=lambda x: x[0]) if not (digits(r[0]) % 2 == 1 and (digits(r[0]) == digits(r[1])))])
+    n = 1
+    r = next(i)
+    while r:
+        d = digits(n)
+        num = (n*(10**d))+n
+        if num >= r[0] and num <= r[1]: total += num
+        elif num > r[1]: r = next(i, None); continue
+        n += 1
     return total
 
-
+@cache
 def digits(num):
     i = 1
     while num > 9:
