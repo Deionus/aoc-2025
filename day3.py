@@ -1,35 +1,15 @@
-"""
-Turn on TWO BATTERIES in each bank
-1234
-2 AND 4 on makes 24 Joltage
-"""
-
 from utils import l
 
-banks = [int(a) for a in l()]
-total = 0
-for bank in banks:
-    volts = []
-    while bank > 0:
-        volts.insert(0, bank % 10)
-        bank = bank // 10
-    
+BANKS = [[int(i) for i in list(a)] for a in l()]
+
+def calculate(volts, batteries):
     left = 0
     q = []
-    for p in range(len(volts)-12, len(volts)):
-        if left == p:
-            q.append(volts[left])
-            left += 1
-            continue
-        m = max(volts[left:p+1])
-        i = left + volts[left:p+1].index(m)
-        q.append(m)
-        left = i+1
+    for p in range(len(volts)-batteries, len(volts)):
+        if left == p: q.extend(volts[left:]); break
+        q.append(max(volts[left:p+1]))
+        left += volts[left:p+1].index(q[-1]) + 1
+    return int("".join(str(i) for i in q))
 
-    n = 0
-    q.reverse()
-    for i in range(12):
-        n += q[i] * (10**i)
-    total += n
-
-print(total)
+print(sum(calculate(volts, 2) for volts in BANKS))
+print(sum(calculate(volts, 12) for volts in BANKS))
