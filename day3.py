@@ -9,22 +9,27 @@ from utils import l
 banks = [int(a) for a in l()]
 total = 0
 for bank in banks:
-    num = bank
-    ones_place = num % 10
-    num = num // 10
-    tens_place = num % 10
-    num = num // 10
-
-    while num > 0:
-        v = num % 10
-        if v >= tens_place:
-            if tens_place > ones_place:
-                ones_place = tens_place
-            tens_place = v
-        num = num // 10
+    volts = []
+    while bank > 0:
+        volts.insert(0, bank % 10)
+        bank = bank // 10
     
-    n = (tens_place*10) + ones_place
-    print(n)
+    left = 0
+    q = []
+    for p in range(len(volts)-12, len(volts)):
+        if left == p:
+            q.append(volts[left])
+            left += 1
+            continue
+        m = max(volts[left:p+1])
+        i = left + volts[left:p+1].index(m)
+        q.append(m)
+        left = i+1
+
+    n = 0
+    q.reverse()
+    for i in range(12):
+        n += q[i] * (10**i)
     total += n
 
 print(total)
