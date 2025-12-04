@@ -12,3 +12,7 @@ def l():
 
 def c():
     return o().split(",")
+
+
+def g():
+    return [list(line) for line in l()]
