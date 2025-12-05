@@ -1,11 +1,14 @@
-from utils import o
+from runner import go
 
 
-a, b = (i.split("\n") for i in o().split("\n\n"))
-ranges = sorted([(int(mini), int(maxi)) for mini, maxi in [i.split("-") for i in a]], key=lambda x: x[0])
+def process(input: str):
+    a, b = (i.split("\n") for i in input.split("\n\n"))
+    ranges = sorted([(int(mini), int(maxi)) for mini, maxi in [i.split("-") for i in a]], key=lambda x: x[0])
+    return (a, b, ranges)
 
 
-def part1():
+def part1(input):
+    _, b, ranges = input
     fresh = 0
     for i in b:
         for mini, maxi in ranges:
@@ -13,7 +16,8 @@ def part1():
     return fresh
 
 
-def part2():
+def part2(input):
+    _, _, ranges = input
     new_ranges = []
     r = ranges[0]
     for i in range(1, len(ranges)):
@@ -24,5 +28,4 @@ def part2():
     return sum(maxi-mini+1 for mini, maxi in new_ranges)
 
 
-print(part1())
-print(part2())
+go(process, part1, part2)
