@@ -17,10 +17,9 @@ def c():
     return o().split(",")
 
 
-def g():
-    return [list(line) for line in l()]
-
-
-def dg(default):
-    a = g()
-    return collections.defaultdict(default, {(i,j): a[i][j] for i in range(len(a)) for j in range(len(a[0]))})
+def default_grid(grid, default):
+    """
+    Turns a 2d array 'grid' into a default dict. `default` is a lambda
+    grid: [[1, 2, 3, 4], [3, 4, 5, 6]]
+    """
+    return collections.defaultdict(default, {(i,j): grid[i][j] for i in range(len(grid)) for j in range(len(grid[0]))})

@@ -1,13 +1,18 @@
-from utils import dg, g, ADJ_8
+from utils import ADJ_8, default_grid
+from runner import go
 
 
-def part1():
-    grid = dg(lambda: ".")
+def process(input):
+    return [list(line) for line in input.split("\n")]
+
+
+def part1(input):
+    grid = default_grid(input, lambda: ".")
     return sum([sum([1 for a, b in ADJ_8 if grid[(a+row, b+col)] == "@"]) < 4 for (row, col), val in list(grid.items()) if val == "@"])
 
 
-def part2():
-    grid = g()
+def part2(input):
+    grid = input
     total = 0
     N = len(grid)
     M = len(grid[0])
@@ -28,5 +33,4 @@ def part2():
     return total
 
 
-print(part1())
-print(part2())
+go(process, part1, part2)
