@@ -4,8 +4,8 @@ def go(process, part1, part2, assertions = None):
     actual = sys.argv[0][:-3]
     test = actual.replace("day", "test")
 
-    actual = open(f"inputs/{actual}.txt", "r").read().strip()
-    test = open(f"inputs/{test}.txt", "r").read().strip()
+    actual = open(f"inputs/{actual}.txt", "r").read().strip("\n")
+    test = open(f"inputs/{test}.txt", "r").read().strip("\n")
 
     processed_test = process(test)
     processed_actual = process(actual)
