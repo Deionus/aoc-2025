@@ -13,18 +13,30 @@ def go(process, part1, part2):
     processed_test = process(test)
     processed_actual = process(actual)
 
+    results = []
+
     if not no_test:
         print("Part1 - Test")
-        print(part1(processed_test))
+        r = part1(processed_test)
+        print(r)
+        results.append(r)
     
     if not test_only:
         print("Part1 - Actual")
-        print(part1(processed_actual))
+        r = part1(processed_actual)
+        print(r)
+        results.append(r)
 
     if not no_test:
         print("Part2 - Test")
-        print(part2(processed_test))
+        r = part2(processed_test)
+        print(r)
+        results.append(r)
     
     if not test_only:
         print("Part2 - Actual")
-        print(part2(processed_actual))
+        r = part2(processed_actual)
+        print(r)
+        results.append(r)
+
+    return results
