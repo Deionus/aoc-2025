@@ -1,6 +1,9 @@
 import sys
 
-def go(process, part1, part2, assertions = None):
+def go(process, part1, part2):
+    test_only = "--test" in sys.argv
+    no_test = "--no-test" in sys.argv
+
     actual = sys.argv[0][:-3]
     test = actual.replace("day", "test")
 
@@ -10,24 +13,18 @@ def go(process, part1, part2, assertions = None):
     processed_test = process(test)
     processed_actual = process(actual)
 
-    results = [
-        part1(processed_test),
-        part1(processed_actual),
-        part2(processed_test),
-        part2(processed_actual),
-    ]
+    if not no_test:
+        print("Part1 - Test")
+        print(part1(processed_test))
+    
+    if not test_only:
+        print("Part1 - Actual")
+        print(part1(processed_actual))
 
-    headers = [
-        "Part1 - Test",
-        "Part1 - Actual",
-        "Part2 - Test",
-        "Part2 - Actual"
-    ]
-
-    assertions = assertions or [None, None, None, None]
-
-    for r, h, a in zip(results, headers, assertions, strict=True):
-        print(h)
-        print(r)
-        if a is not None:
-            assert a == r, f"Expected {a}, got {r}"
+    if not no_test:
+        print("Part2 - Test")
+        print(part2(processed_test))
+    
+    if not test_only:
+        print("Part2 - Actual")
+        print(part2(processed_actual))
