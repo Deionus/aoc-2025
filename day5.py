@@ -4,11 +4,11 @@ from runner import go
 def process(input: str):
     a, b = (i.split("\n") for i in input.split("\n\n"))
     ranges = sorted([(int(mini), int(maxi)) for mini, maxi in [i.split("-") for i in a]], key=lambda x: x[0])
-    return (a, b, ranges)
+    return (b, ranges)
 
 
 def part1(input):
-    _, b, ranges = input
+    b, ranges = input
     fresh = 0
     for i in b:
         for mini, maxi in ranges:
@@ -17,7 +17,7 @@ def part1(input):
 
 
 def part2(input):
-    _, _, ranges = input
+    _, ranges = input
     new_ranges = []
     r = ranges[0]
     for i in range(1, len(ranges)):
