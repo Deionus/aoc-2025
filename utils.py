@@ -4,17 +4,10 @@ import sys, collections
 ADJ_8 = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0,1), (1,-1), (1,0), (1,1))
 ADJ_4 = ((-1, 0), (1, 0), (0, -1), (0, 1))
 
+
 def o():
     text = open(f"inputs/{sys.argv[0][:-3]}.txt", "r").read()
     return text
-
-
-def l():
-    return o().split("\n")
-
-
-def c():
-    return o().split(",")
 
 
 def default_grid(grid, default):
