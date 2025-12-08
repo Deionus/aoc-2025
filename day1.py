@@ -1,29 +1,17 @@
+from itertools import accumulate
 from runner import go
 
 
-def process(input):
-    return input.split("\n")
+def process(input: str):
+    return [int(l) for l in input.replace("R", "").replace("L", "-").split("\n")]
 
 
 def part1(input):
-    dial = 50
-    c = 0
-    for d, n in [(1 if l[0] == "R" else -1, int(l[1:])) for l in input]:
-        dial = (dial + n * d) % 100
-        if dial == 0: c += 1
-    return c
+    return sum(n == 0 for n in accumulate([50, *input], lambda a, b: (a+b)%100))
 
 
 def part2(input):
-    dial = 50
-    c = 0
-    for d, n in [(1 if l[0] == "R" else -1, int(l[1:])) for l in input]:
-        c += abs(n // 100)
-        n = (n % 100) * d
-        dial = dial + n
-        if (dial <= 0 or dial > 99) and dial - n != 0: c += 1
-        dial = dial % 100
-    return c
+    return sum(a[0] for a in accumulate([(sum(abs(n) // 100 for n in input), 50), *[(abs(n) % 100) * (-1 if n < 0 else 1) for n in input]], lambda a,b: ((a[1]+b <= 0 or a[1]+b > 99) and a[1] != 0, (a[1] + b) % 100)))
 
 
 go(process, part1, part2)
