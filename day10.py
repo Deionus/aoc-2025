@@ -1,7 +1,7 @@
 import sys
-import time
 from collections import deque
 from runner import go
+from scipy.optimize import linprog
 
 
 def process(input: str):
@@ -51,52 +51,19 @@ def part1(input):
 
 
 def part2(input):
-    return 0
-
-    # Too slow for the real input!
-    machines = []
-    for l in input:
-        tokens = l.split(" ")
-        joltage = tokens[-1]
-        buttons = tokens[1:-1]
-        machines.append((joltage, buttons))
-
     total = 0
-    for joltage, buttons in machines:
-        buttons = [b[1:-1].split(",") for b in buttons]
-        print(buttons)
-
-        joltage = list(map(int, joltage[1:-1].split(",")))
-        print(joltage)
-
-        count = [0] * len(joltage)
-        print(count)
-
-        history = set()
-        seen = {tuple(count)}
-        found = False
-        gen = 0
-        while not found:
-            new_seen = set()
-            for state in seen:
-                if state in history: continue
-                for b_set in buttons:
-                    new_state = list(state)
-                    for b in b_set:
-                        new_state[int(b)] += 1
-
-                    # print(state, new_state)
-                    if new_state == joltage: found = True; break
-                    new_seen.add(tuple(new_state))
-
-                if found: break
-            history.union(seen)
-            seen = new_seen
-            gen +=1
+    for _, buttons, counters in input:
+        counters = list(map(int, counters[1:-1].split(",")))
+        buttons = [tuple(map(int, b[1:-1].split(","))) for b in buttons]
+        buttons = [[int(i in b) for i in range(len(counters))] for b in buttons]
         
-        total += gen
+        c = [1] * len(buttons) # Coefficients to minimize. So count of each button press?
+        a = list(zip(*buttons)) # Linear eqs, transposed
 
-    return total
+        res = linprog(c, A_eq=a, b_eq=counters, integrality=1)
+        total += res.fun
+
+    return int(total)
 
 
 go(process, part1, part2)
