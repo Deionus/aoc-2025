@@ -1,56 +1,52 @@
-import copy
+import sys
 import time
+from collections import deque
 from runner import go
 
 
 def process(input: str):
-    return input.split("\n")
-
-
-def part1(input):
+    lines = input.split("\n")
     machines = []
-    for l in input:
+    for l in lines:
         tokens = l.split(" ")
         indicator = tokens[0]
         buttons = tokens[1:-1]
-        machines.append((indicator, buttons))
+        counter = tokens[-1]
+        machines.append((indicator, buttons, counter))
 
+    return machines
+
+
+def part1(input):
     total = 0
-    for machine in machines:
-        print(f"Machine {machine}")
-        indicator, buttons = machine
+    for indicator, buttons, _ in input:
         target = 0
         for c in reversed(indicator[1:-1]): # Reverse to make the first button the lsb
-            target = (target << 1) + (c == "#")
+            target <<= 1
+            target += c == "#"
 
+        masks = []
+        for button in buttons:
+            mask = 0
+            for b in button[1:-1].split(","):
+                mask |= 1 << int(b)
+            masks.append(mask)
 
-        print(bin(target))
-        seen = {0}
-        gen = 0
-        found = False
-        while not found:
-            n = set()
-            for state in seen:
-                for button in buttons:
-                    mask = 0
-                    print(button)
-                    for b in button[1:-1].split(","):
-                        mask |= 1 << int(b)
+        def calc():
+            seen = {0}
+            q = deque([(0, 0)])
+            while q:
+                state, presses = q.popleft()
+                for mask in masks:
                     new_state = state ^ mask
-                    print(bin(mask), bin(new_state))
-                    if new_state == target:
-                        print(bin(target), bin(new_state))
-                        found = True; 
-                        break
-                    n.add(new_state)
-                    # time.sleep(1)
-                if found: break
-            seen = n
-            gen += 1
-           
+                    if new_state == target: return presses+1
+                    if new_state not in seen: q.append((new_state, presses+1))
+                    seen.add(new_state)
+            else:
+                print("No solution found!")
+                sys.exit()
 
-        print(f"Found in {gen} presses")
-        total += gen
+        total += calc()
     return total
 
 
